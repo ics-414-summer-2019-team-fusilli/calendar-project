@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ICS 414 Calendar Project</title>
+	<script type="text/javascript">
+// source: https://stackoverflow.com/questions/45831191/generate-and-download-file-from-js/45831280#45831280
+function download(filename, text) {
+	var element = document.createElement('a');
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', filename);
+
+	element.style.display = 'none';
+	document.body.appendChild(element);
+
+	element.click();
+
+	document.body.removeChild(element);
+}
+// source: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript/2117523#2117523
+function uuidv4() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+		return v.toString(16);
+	});
+}
+function formatTimestamp(date) {
+	// https://tools.ietf.org/html/rfc5545#section-3.3.5
+	// FORM #2: DATE WITH UTC TIME
+	// January 19, 1998, at 0700 UTC:
+	// 19980119T070000Z
+
+	// getUTCFullYear() returns YYYY
+	var year = date.getUTCFullYear();
+	// getUTCMonth() returns 0-11, we need 01-12
+	var month = ((date.getUTCMonth() + 1) < 10 ? "0" : "") + (date.getUTCMonth() + 1);
+	// getUTCDate() returns 1-31, we need 01-31
+	var day = (date.getUTCDate() < 10 ? "0" : "") + date.getUTCDate();
+	// getUTCHours() returns 0-23, we need 00-23
+	var hours = (date.getUTCHours() < 10 ? "0" : "") + date.getUTCHours();
+	// getUTCMinutes() returns 0-59, we need 00-59
+	var minutes = (date.getUTCMinutes() < 10 ? "0" : "") + date.getUTCMinutes();
+	// getUTCSeconds() returns 0-59, we need 00-59
+	var seconds = (date.getUTCSeconds() < 10 ? "0" : "") + date.getUTCSeconds();
+
+	return year + month + day + "T" + hours + minutes + seconds + "Z";
+}
+
+window.onload = function() {
+	document.getElementById("download-button").addEventListener("click", function() {
+		// set to current time
+		var dtstamp = new Date();
+		// set to July 13th, 2018 at 10AM HST
+		var dtstart = new Date("2018-07-13T10:00:00-10:00");
+		// set to July 13th, 2018 at 1PM HST
+		var dtend = new Date("2018-07-13T13:00:00-10:00");
+
+		var filename = "sample.ics";
+		var text = "";
+		text += "BEGIN:VCALENDAR\r\n";
+		text += "VERSION:2.0\r\n";
+		text += "PRODID:-//University of Hawaii//ICS 414 Calendar Project//EN\r\n";
+		text += "BEGIN:VEVENT\r\n"; // https://tools.ietf.org/html/rfc5545#section-3.6.1
+		text += "UID:" + uuidv4() + "\r\n"; // required
+		text += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // required
+		text += "DTSTART:" + formatTimestamp(dtstart) + "\r\n"; // required if METHOD not specified
+		text += "DTEND:" + formatTimestamp(dtend) + "\r\n"; // optional
+		text += "SUMMARY:Study for exam\r\n"; // optional
+		text += "LOCATION:Hamilton Library\r\n"; // optional
+		text += "END:VEVENT\r\n";
+		text += "END:VCALENDAR\r\n";
+
+		download(filename, text);
+	}, false);
+}
+	</script>
+</head>
+<body>
+	<input type="button" id="download-button" value="Download Sample .ics File" />
+</body>
+</html>
