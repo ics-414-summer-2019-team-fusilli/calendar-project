@@ -50,26 +50,49 @@ window.onload = function() {
 		// set to current time
 		var dtstamp = new Date();
 		// set to July 13th, 2018 at 10AM HST
-		var dtstart = new Date("2018-07-13T10:00:00-10:00");
+		var dtstart1 = new Date("2018-07-13T10:00:00-10:00");
 		// set to July 13th, 2018 at 1PM HST
-		var dtend = new Date("2018-07-13T13:00:00-10:00");
+		var dtend1 = new Date("2018-07-14T13:00:00-10:00");
 
-		var filename = "sample.ics";
-		var text = "";
-		text += "BEGIN:VCALENDAR\r\n";
-		text += "VERSION:2.0\r\n";
-		text += "PRODID:-//University of Hawaii//ICS 414 Calendar Project//EN\r\n";
-		text += "BEGIN:VEVENT\r\n"; // https://tools.ietf.org/html/rfc5545#section-3.6.1
-		text += "UID:" + uuidv4() + "\r\n"; // required
-		text += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // required
-		text += "DTSTART:" + formatTimestamp(dtstart) + "\r\n"; // required if METHOD not specified
-		text += "DTEND:" + formatTimestamp(dtend) + "\r\n"; // optional
-		text += "SUMMARY:Study for exam\r\n"; // optional
-		text += "LOCATION:Hamilton Library\r\n"; // optional
-		text += "END:VEVENT\r\n";
-		text += "END:VCALENDAR\r\n";
+    // set to July 13th, 2018 at 10AM HST
+    var dtstart2 = new Date("2018-07-15T10:00:00-10:00");
+    // set to July 13th, 2018 at 1PM HST
+    var dtend2 = new Date("2018-07-16T13:00:00-10:00");
 
-		download(filename, text);
+		var filename1 = "sample.ics";
+		var filename2 = "sample2.ics"
+
+		var text1 = "";
+    text1 += "BEGIN:VCALENDAR\r\n";
+    text1 += "VERSION:2.0\r\n";
+    text1 += "PRODID:-//University of Hawaii//ICS 414 Calendar Project//EN\r\n";
+    text1 += "BEGIN:VEVENT\r\n"; // https://tools.ietf.org/html/rfc5545#section-3.6.1
+    text1 += "UID:" + uuidv4() + "\r\n"; // required
+    text1 += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // required
+    text1 += "DTSTART:" + formatTimestamp(dtstart1) + "\r\n"; // required if METHOD not specified
+    text1 += "DTEND:" + formatTimestamp(dtend1) + "\r\n"; // optional
+    text1 += "SUMMARY:Study for exam\r\n"; // optional
+    text1 += "LOCATION:Hamilton Library\r\n"; // optional
+    text1 += "END:VEVENT\r\n";
+    text1 += "END:VCALENDAR\r\n";
+
+    var text2 = "";
+    text2 += "BEGIN:VCALENDAR\r\n";
+    text2 += "VERSION:2.0\r\n";
+    text2 += "PRODID:-//University of Hawaii//ICS 414 Calendar Project//EN\r\n";
+    text2 += "BEGIN:VEVENT\r\n"; // https://tools.ietf.org/html/rfc5545#section-3.6.1
+    text2 += "UID:" + uuidv4() + "\r\n"; // required
+    text2 += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // required
+    text2 += "DTSTART:" + formatTimestamp(dtstart2) + "\r\n"; // required if METHOD not specified
+    text2 += "DTEND:" + formatTimestamp(dtend2) + "\r\n"; // optional
+    text2 += "SUMMARY:Study for exam\r\n"; // optional
+    text2 += "LOCATION:Hamilton Library\r\n"; // optional
+    text2 += "END:VEVENT\r\n";
+    text2 += "END:VCALENDAR\r\n";
+
+		download(filename1, text1);
+    download(filename2, text2);
+
 	}, false);
 }
 	</script>
