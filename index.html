@@ -3,6 +3,22 @@
 <head>
 	<title>ICS 414 Calendar Project</title>
 	<script type="text/javascript">
+// array of month names
+var monthNames = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December"
+];
+
 // source: https://stackoverflow.com/questions/45831191/generate-and-download-file-from-js/45831280#45831280
 function download(filename, text) {
 	var element = document.createElement('a');
@@ -23,6 +39,7 @@ function uuidv4() {
 		return v.toString(16);
 	});
 }
+// function to generate formated timestamps from date object
 function formatTimestamp(date) {
 	// https://tools.ietf.org/html/rfc5545#section-3.3.5
 	// FORM #2: DATE WITH UTC TIME
@@ -44,17 +61,145 @@ function formatTimestamp(date) {
 
 	return year + month + day + "T" + hours + minutes + seconds + "Z";
 }
+// function to add hour options to a select input
+function generateHourOptions(elementId) {
+	// get the select element to add options to
+	var selectElement = document.getElementById(elementId);
+
+	// create options for 12, 1, 2, ... 11
+	for (var i = 0; i < 12; i++) {
+		// create new option element
+		var optionElement = document.createElement('option');
+		// we need 0 to be 12
+		optionElement.value = (i === 0 ? "12" : i);
+		optionElement.innerHTML = (i === 0 ? "12" : i);
+		// append new option element to the select element
+		selectElement.appendChild(optionElement);
+	}
+}
+// function to add minute options to a select input
+function generateMinuteOptions(elementId) {
+	// get the select element to add options to
+	var selectElement = document.getElementById(elementId);
+
+	// create options for 0, 1, 2, ... 59
+	for (var i = 0; i < 60; i++) {
+		// create new option element
+		var optionElement = document.createElement('option');
+		// we need 00-59
+		optionElement.value = (i < 10 ? "0" : "") + i;
+		optionElement.innerHTML = (i < 10 ? "0" : "") + i;
+		// append new option element to the select element
+		selectElement.appendChild(optionElement);
+	}
+}
+// function to add month options to a select input
+function generateMonthOptions(elementId) {
+	// get the select element to add options to
+	var selectElement = document.getElementById(elementId);
+
+	// create options for each month, monthNames declared globally
+	monthNames.forEach(function(month, index) {
+		// create new option element
+		var optionElement = document.createElement('option');
+		optionElement.value = index;
+		optionElement.innerHTML = month;
+		// append new option element to the select element
+		selectElement.appendChild(optionElement);
+	});
+}
+// function to add day options to a select input
+function generateDayOptions(elementId) {
+	// get the select element to add options to
+	var selectElement = document.getElementById(elementId);
+
+	// create options for 1, 2, ... 31
+	for (var i = 1; i <= 31; i++) {
+		// create new option element
+		var optionElement = document.createElement('option');
+		optionElement.value = i;
+		optionElement.innerHTML = i;
+		// append new option element to the select element
+		selectElement.appendChild(optionElement);
+	}
+}
+// function to add year options to a select input
+function generateYearOptions(elementId) {
+	// get the select element to add options to
+	var selectElement = document.getElementById(elementId);
+	// set to current time
+	var currentTime = new Date();
+
+	// create options for YYYY, YYYY + 1, ... YYYY + 9
+	for (var i = 0; i < 10; i++) {
+		// create new option element
+		var optionElement = document.createElement('option');
+		optionElement.value = (currentTime.getUTCFullYear() + i);
+		optionElement.innerHTML = (currentTime.getUTCFullYear() + i);
+		// append new option element to the select element
+		selectElement.appendChild(optionElement);
+	}
+}
 
 window.onload = function() {
+	// generate options for select inputs
+	generateHourOptions("startHour");
+	generateMinuteOptions("startMinute");
+	generateHourOptions("finishHour");
+	generateMinuteOptions("finishMinute");
+	generateMonthOptions("dateMonth");
+	generateDayOptions("dateDay");
+	generateYearOptions("dateYear");
+	// set the default start time to 8:00 AM
+	document.getElementById("startHour").value = "8";
+	document.getElementById("startMinute").value = "00";
+	document.getElementById("startAMPM").value = "AM";
+	// set the default end time to 12:00 PM
+	document.getElementById("finishHour").value = "12";
+	document.getElementById("finishMinute").value = "00";
+	document.getElementById("finishAMPM").value = "PM";
+	// get the current time
+	var currentTime = new Date();
+	// set the default date to today
+	document.getElementById("dateMonth").value = currentTime.getMonth();
+	document.getElementById("dateDay").value = currentTime.getDate();
+	document.getElementById("dateYear").value = currentTime.getFullYear();
+
 	document.getElementById("download-button").addEventListener("click", function() {
+		// get user inputs
+		var title = document.getElementById("title").value;
+		var startHour = document.getElementById("startHour").value;
+		var startMinute = document.getElementById("startMinute").value;
+		var startAMPM = document.getElementById("startAMPM").value;
+		var finishHour = document.getElementById("finishHour").value;
+		var finishMinute = document.getElementById("finishMinute").value;
+		var finishAMPM = document.getElementById("finishAMPM").value;
+		var dateMonth = document.getElementById("dateMonth").value;
+		var dateDay = document.getElementById("dateDay").value;
+		var dateYear = document.getElementById("dateYear").value;
+		var location = document.getElementById("location").value;
+		var description = document.getElementById("description").value;
+		// format user inputs
+		// need hour in 0-23 integer, have 12, 1, 2 ... 11 string and AM/PM
+		startHour = (startHour == "12" ? 0 : parseInt(startHour, 10)) + (startAMPM == "PM" ? 12 : 0);
+		finishHour = (finishHour == "12" ? 0 : parseInt(finishHour, 10)) + (finishAMPM == "PM" ? 12 : 0);
+		// need month in 0-59 integer, have 00-59 string
+		startMinute = parseInt(startMinute, 10);
+		finishMinute = parseInt(finishMinute, 10);
+		// need month in 0-11 integer, have 0-11 string
+		dateMonth = parseInt(dateMonth, 10);
+		// need day in 1-31 integer, have 1-31 string
+		dateDay = parseInt(dateDay, 10);
+		// need year in YYYY integer, have YYYY string
+		dateYear = parseInt(dateYear, 10);
+
 		// set to current time
 		var dtstamp = new Date();
-		// set to July 13th, 2018 at 10AM HST
-		var dtstart = new Date("2018-07-13T10:00:00-10:00");
-		// set to July 13th, 2018 at 1PM HST
-		var dtend = new Date("2018-07-13T13:00:00-10:00");
+		// set to user input
+		var dtstart = new Date(dateYear, dateMonth, dateDay, startHour, startMinute, 0, 0);
+		var dtend = new Date(dateYear, dateMonth, dateDay, finishHour, finishMinute, 0, 0);
 
-		var filename = "sample.ics";
+		var filename = "event.ics";
 		var text = "";
 		text += "BEGIN:VCALENDAR\r\n";
 		text += "VERSION:2.0\r\n";
@@ -64,8 +209,20 @@ window.onload = function() {
 		text += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // required
 		text += "DTSTART:" + formatTimestamp(dtstart) + "\r\n"; // required if METHOD not specified
 		text += "DTEND:" + formatTimestamp(dtend) + "\r\n"; // optional
-		text += "SUMMARY:Study for exam\r\n"; // optional
-		text += "LOCATION:Hamilton Library\r\n"; // optional
+
+		// only include summary if title isn't empty
+		if (title !== undefined && title.length > 0) {
+			text += "SUMMARY:" + title + "\r\n"; // optional
+		}
+		// only include location if location isn't empty
+		if (location !== undefined && location.length > 0) {
+			text += "LOCATION:" + location + "\r\n"; // optional
+		}
+		// only include description if description isn't empty
+		if (description !== undefined && description.length > 0) {
+			text += "DESCRIPTION:" + description + "\r\n"; // optional
+		}
+
 		text += "END:VEVENT\r\n";
 		text += "END:VCALENDAR\r\n";
 
@@ -75,6 +232,37 @@ window.onload = function() {
 	</script>
 </head>
 <body>
-	<input type="button" id="download-button" value="Download Sample .ics File" />
+	<label for="title">Title</label>
+	<input type="text" id="title" name="title" placeholder="Title (optional)" />
+	<br />
+	<label for="startHour">Start</label>
+	<select id="startHour" name="startHour"></select>
+	<select id="startMinute" name="startMinute"></select>
+	<select id="startAMPM" name="startAMPM">
+		<option value="AM" selected>AM</option>
+		<option value="PM">PM</option>
+	</select>
+	<br />
+	<label for="finishHour">Finish</label>
+	<select id="finishHour" name="finishHour"></select>
+	<select id="finishMinute" name="finishMinute"></select>
+	<select id="finishAMPM" name="finishAMPM">
+		<option value="AM" selected>AM</option>
+		<option value="PM">PM</option>
+	</select>
+	<br />
+	<label for="dateMonth">Date</label>
+	<select id="dateMonth" name="dateMonth"></select>
+	<select id="dateDay" name="dateDay"></select>
+	<select id="dateYear" name="dateYear"></select>
+	<br />
+	<label for="location">Location</label>
+	<input type="text" id="location" name="location" placeholder="Location (optional)" />
+	<br />
+	<label for="description">Description</label>
+	<br />
+	<textarea id="description" name="description" placeholder="Description (optional)" ></textarea>
+	<br />
+	<input type="button" id="download-button" value="Download Event .ics File" />
 </body>
 </html>
