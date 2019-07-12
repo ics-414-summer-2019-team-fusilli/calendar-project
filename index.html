@@ -3,8 +3,9 @@
 <head>
   <style>
     .button {
-      background-color: dodgerblue; /* Green */
+      background-color: dodgerblue;
       border: none;
+      width: 280px;
       color: white;
       padding: 15px 32px;
       text-align: center;
@@ -14,8 +15,6 @@
       margin: 4px 2px;
       cursor: pointer;
     }
-
-    .button1 {width: 280px;}
   </style>
 
 	<title>ICS 414 Calendar Project</title>
@@ -243,9 +242,50 @@ window.onload = function() {
 		text += "END:VEVENT\r\n";
 		text += "END:VCALENDAR\r\n";
 
-		download(filename, text);
+		if(dateMonth === 1 || dateMonth === 3 || dateMonth === 5 || dateMonth === 8 || dateMonth === 10){
+		  if(dateDay > 30) {
+        alert("Try Again!");
+      }
+
+		  else if(dateMonth === 1 && dateDay > 28){
+        alert("Try Again!");
+      }
+
+		  else {
+        download(filename, text);
+      }
+    }
+
+		else if ((startAMPM === "PM") && (finishAMPM === "AM")) {
+      alert("Try Again!");
+    }
+
+    else if (startAMPM === finishAMPM) {
+      if(startHour > finishHour) {
+        alert("Try Again!");
+      }
+
+      else if(startHour === finishHour) {
+        if (startMinute > finishMinute) {
+          alert("I am an alert box!");
+        } else {
+          download(filename, text);
+        }
+      }
+
+      else {
+        download(filename, text);
+      }
+    }
+
+		else {
+      download(filename, text);
+		}
 	}, false);
 }
+
+
+
 	</script>
 </head>
 <body>
@@ -284,7 +324,14 @@ window.onload = function() {
 	<br />
 	<textarea id="description" name="description" placeholder="Description (optional)" style ="font-size:60%" ></textarea>
 	<br />
-  <button class="button button1" id="download-button">Download Event .ics File</button><br>
+  <button class="button" id="download-button">
+    Download Event .ics File
+  </button>
+  <br>
+
+
+
+
 </div>
 </div>
 </body>

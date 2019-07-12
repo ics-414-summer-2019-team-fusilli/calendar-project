@@ -16,12 +16,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="118">
-              <caret line="252" column="91" selection-start-line="252" selection-start-column="91" selection-end-line="252" selection-end-column="91" />
+            <state relative-caret-position="363">
+              <caret line="254" column="33" selection-start-line="254" selection-start-column="33" selection-end-line="254" selection-end-column="33" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#h1#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#input#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#input#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#textarea#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -41,6 +41,19 @@
     <findStrings>
       <find>style</find>
       <find>title</find>
+      <find>script</find>
+      <find>PM</find>
+      <find>startAMPM</find>
+      <find>click</find>
+      <find>download-button</find>
+      <find>myPopup</find>
+      <find>mypopup</find>
+      <find>buttontext</find>
+      <find>after</find>
+      <find>show</find>
+      <find>toggle</find>
+      <find>febr</find>
+      <find>monthNames</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -60,9 +73,9 @@
     <auto-save>true</auto-save>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="262" />
+    <option name="x" value="589" />
     <option name="y" value="23" />
-    <option name="width" value="1215" />
+    <option name="width" value="1057" />
     <option name="height" value="947" />
   </component>
   <component name="ProjectView">
@@ -89,6 +102,7 @@
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
   </component>
   <component name="RunDashboard">
@@ -104,15 +118,16 @@
     </option>
   </component>
   <component name="ToolWindowManager">
-    <frame x="262" y="23" width="1215" height="947" extended-state="0" />
+    <frame x="589" y="23" width="1057" height="947" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Designer" />
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24958123" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28764477" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Inspection Results" weight="0.32982457" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -136,12 +151,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="252" column="91" selection-start-line="252" selection-start-column="91" selection-end-line="252" selection-end-column="91" />
+        <state relative-caret-position="363">
+          <caret line="254" column="33" selection-start-line="254" selection-start-column="33" selection-end-line="254" selection-end-column="33" />
           <folding>
             <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#h1#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#input#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#input#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#textarea#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
