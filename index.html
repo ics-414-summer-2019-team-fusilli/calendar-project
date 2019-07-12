@@ -269,7 +269,13 @@ window.onload = function() {
 		text += "END:VEVENT\r\n";
 		text += "END:VCALENDAR\r\n";
 
-		download(filename, text);
+    if (dtstart > dtend) {
+      alert("Error: Start time after finish time");
+    }
+
+    else {
+      download(filename, text);
+    }
 	}, false);
 }
 window.onhashchange = function() {
