@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <style>
+    .button {
+      background-color: dodgerblue; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .button1 {width: 250px;}
+  </style>
+
 	<title>ICS 414 Calendar Project</title>
 	<script type="text/javascript">
 // array of month names
@@ -232,10 +249,17 @@ window.onload = function() {
 	</script>
 </head>
 <body>
-	<label for="title">Title</label>
-	<input type="text" id="title" name="title" placeholder="Title (optional)" />
+<h1 style="text-align:center; font-size:300%;">Welcome to ICS414 Calendaring System!</h1>
+<center>
+  <img src="https://media.idownloadblog.com/wp-content/uploads/2015/11/OS-X-El-Capitan-Calendar-app-icon-full-size.jpg" alt="Trulli" width="250" height="250" align="middle">
+
+</center>
+<h2></h2>
+<div style="text-align:center; font-size:150%;">
+	<label for="title">Title: </label>
+	<input type="text" id="title" name="title" placeholder="Title (optional)" style ="font-size:60%" />
 	<br />
-	<label for="startHour">Start</label>
+	<label for="startHour">Start:</label>
 	<select id="startHour" name="startHour"></select>
 	<select id="startMinute" name="startMinute"></select>
 	<select id="startAMPM" name="startAMPM">
@@ -243,7 +267,7 @@ window.onload = function() {
 		<option value="PM">PM</option>
 	</select>
 	<br />
-	<label for="finishHour">Finish</label>
+	<label for="finishHour">Finish:</label>
 	<select id="finishHour" name="finishHour"></select>
 	<select id="finishMinute" name="finishMinute"></select>
 	<select id="finishAMPM" name="finishAMPM">
@@ -251,18 +275,19 @@ window.onload = function() {
 		<option value="PM">PM</option>
 	</select>
 	<br />
-	<label for="dateMonth">Date</label>
+	<label for="dateMonth">Date:</label>
 	<select id="dateMonth" name="dateMonth"></select>
 	<select id="dateDay" name="dateDay"></select>
 	<select id="dateYear" name="dateYear"></select>
 	<br />
-	<label for="location">Location</label>
-	<input type="text" id="location" name="location" placeholder="Location (optional)" />
+	<label for="location">Location:</label>
+	<input type="text" id="location" name="location" placeholder="Location (optional)" style ="font-size:60%" />
 	<br />
-	<label for="description">Description</label>
+	<label for="description">Description:</label>
 	<br />
-	<textarea id="description" name="description" placeholder="Description (optional)" ></textarea>
+	<textarea id="description" name="description" placeholder="Description (optional)" style ="font-size:60%" ></textarea>
 	<br />
-	<input type="button" id="download-button" value="Download Event .ics File" />
+  <button class="button button1" id="download-button">Download Event .ics File</button><br>
+</div>
 </body>
 </html>
