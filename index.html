@@ -2,7 +2,26 @@
 <html>
 <head>
 	<title>ICS 414 Calendar Project</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+	<link rel="stylesheet" href="./style.css">
 	<script type="text/javascript">
+// object of user inputs
+var userInputs = {
+	title: "",
+	startHour: "8",
+	startMinute: "00",
+	startAMPM: "AM",
+	finishHour: "12",
+	finishMinute: "00",
+	finishAMPM: "PM",
+	dateMonth: "",
+	dateDay: "",
+	dateYear: "",
+	location: "",
+	description: ""
+};
 // array of month names
 var monthNames = [
 	"January",
@@ -17,6 +36,15 @@ var monthNames = [
 	"October",
 	"November",
 	"December"
+];
+// array of container names
+var containerNames = [
+	"main",
+	"title",
+	"startAndFinishTimes",
+	"date",
+	"location",
+	"description"
 ];
 
 // source: https://stackoverflow.com/questions/45831191/generate-and-download-file-from-js/45831280#45831280
@@ -140,6 +168,40 @@ function generateYearOptions(elementId) {
 		selectElement.appendChild(optionElement);
 	}
 }
+// function to hide all containers
+function hideAllContainers() {
+	// loop through containerNames
+	containerNames.forEach(function(container) {
+		// set display CSS property to none
+		document.getElementById(container + "Container").style.display = 'none';
+	});
+}
+// function to set input field values to the corresponding value stored in the userInputs object
+function setInputFieldValues() {
+	// loop through userInputs
+	Object.keys(userInputs).forEach(function(key) {
+		// set the corresponding input field to the value stored in the userInputs object
+		document.getElementById(key).value = userInputs[key];
+	});
+}
+// function to cancel any changes and return to main container
+function cancelEdit() {
+	// reset input field values
+	setInputFieldValues();
+	// go back to main container
+	window.history.go(-1);
+}
+// function to save any changes and return to main container
+function saveEdit() {
+	// loop through userInputs
+	Object.keys(userInputs).forEach(function(key) {
+		// set the value stored in the userInputs object to the corresponding input field value
+		userInputs[key] = document.getElementById(key).value;
+	});
+
+	// go back to main container
+	window.history.go(-1);
+}
 
 window.onload = function() {
 	// generate options for select inputs
@@ -150,48 +212,29 @@ window.onload = function() {
 	generateMonthOptions("dateMonth");
 	generateDayOptions("dateDay");
 	generateYearOptions("dateYear");
-	// set the default start time to 8:00 AM
-	document.getElementById("startHour").value = "8";
-	document.getElementById("startMinute").value = "00";
-	document.getElementById("startAMPM").value = "AM";
-	// set the default end time to 12:00 PM
-	document.getElementById("finishHour").value = "12";
-	document.getElementById("finishMinute").value = "00";
-	document.getElementById("finishAMPM").value = "PM";
 	// get the current time
 	var currentTime = new Date();
 	// set the default date to today
-	document.getElementById("dateMonth").value = currentTime.getMonth();
-	document.getElementById("dateDay").value = currentTime.getDate();
-	document.getElementById("dateYear").value = currentTime.getFullYear();
+	userInputs["dateMonth"] = currentTime.getMonth();
+	userInputs["dateDay"] = currentTime.getDate();
+	userInputs["dateYear"] = currentTime.getFullYear();
+	// set default input field values
+	setInputFieldValues();
 
 	document.getElementById("download-button").addEventListener("click", function() {
-		// get user inputs
-		var title = document.getElementById("title").value;
-		var startHour = document.getElementById("startHour").value;
-		var startMinute = document.getElementById("startMinute").value;
-		var startAMPM = document.getElementById("startAMPM").value;
-		var finishHour = document.getElementById("finishHour").value;
-		var finishMinute = document.getElementById("finishMinute").value;
-		var finishAMPM = document.getElementById("finishAMPM").value;
-		var dateMonth = document.getElementById("dateMonth").value;
-		var dateDay = document.getElementById("dateDay").value;
-		var dateYear = document.getElementById("dateYear").value;
-		var location = document.getElementById("location").value;
-		var description = document.getElementById("description").value;
 		// format user inputs
 		// need hour in 0-23 integer, have 12, 1, 2 ... 11 string and AM/PM
-		startHour = (startHour == "12" ? 0 : parseInt(startHour, 10)) + (startAMPM == "PM" ? 12 : 0);
-		finishHour = (finishHour == "12" ? 0 : parseInt(finishHour, 10)) + (finishAMPM == "PM" ? 12 : 0);
+		var startHour = (userInputs["startHour"] == "12" ? 0 : parseInt(userInputs["startHour"], 10)) + (userInputs["startAMPM"] == "PM" ? 12 : 0);
+		var finishHour = (userInputs["finishHour"] == "12" ? 0 : parseInt(userInputs["finishHour"], 10)) + (userInputs["finishAMPM"] == "PM" ? 12 : 0);
 		// need month in 0-59 integer, have 00-59 string
-		startMinute = parseInt(startMinute, 10);
-		finishMinute = parseInt(finishMinute, 10);
+		var startMinute = parseInt(userInputs["startMinute"], 10);
+		var finishMinute = parseInt(userInputs["finishMinute"], 10);
 		// need month in 0-11 integer, have 0-11 string
-		dateMonth = parseInt(dateMonth, 10);
+		var dateMonth = parseInt(userInputs["dateMonth"], 10);
 		// need day in 1-31 integer, have 1-31 string
-		dateDay = parseInt(dateDay, 10);
+		var dateDay = parseInt(userInputs["dateDay"], 10);
 		// need year in YYYY integer, have YYYY string
-		dateYear = parseInt(dateYear, 10);
+		var dateYear = parseInt(userInputs["dateYear"], 10);
 
 		// set to current time
 		var dtstamp = new Date();
@@ -211,16 +254,16 @@ window.onload = function() {
 		text += "DTEND:" + formatTimestamp(dtend) + "\r\n"; // optional
 
 		// only include summary if title isn't empty
-		if (title !== undefined && title.length > 0) {
-			text += "SUMMARY:" + title + "\r\n"; // optional
+		if (userInputs["title"].length > 0) {
+			text += "SUMMARY:" + userInputs["title"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
 		}
 		// only include location if location isn't empty
-		if (location !== undefined && location.length > 0) {
-			text += "LOCATION:" + location + "\r\n"; // optional
+		if (userInputs["location"].length > 0) {
+			text += "LOCATION:" + userInputs["location"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
 		}
 		// only include description if description isn't empty
-		if (description !== undefined && description.length > 0) {
-			text += "DESCRIPTION:" + description + "\r\n"; // optional
+		if (userInputs["description"].length > 0) {
+			text += "DESCRIPTION:" + userInputs["description"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
 		}
 
 		text += "END:VEVENT\r\n";
@@ -229,40 +272,131 @@ window.onload = function() {
 		download(filename, text);
 	}, false);
 }
+window.onhashchange = function() {
+	// if the hash length is greater than zero, show the corresponding container
+	if (location.hash.length > 0) {
+		// get the part following the hash sign
+		hash = location.hash.split("#")[1];
+
+		// show the container if it exists, otherwise go back
+		if (containerNames.indexOf(hash) >= 0) {
+			hideAllContainers();
+			document.getElementById(hash + "Container").style.display = 'block';
+		} else {
+			window.history.go(-1);
+		}
+	// otherwise show main container
+	} else {
+		hideAllContainers();
+		document.getElementById("mainContainer").style.display = 'block';
+	}
+}
 	</script>
 </head>
-<body>
-	<label for="title">Title</label>
-	<input type="text" id="title" name="title" placeholder="Title (optional)" />
-	<br />
-	<label for="startHour">Start</label>
-	<select id="startHour" name="startHour"></select>
-	<select id="startMinute" name="startMinute"></select>
-	<select id="startAMPM" name="startAMPM">
-		<option value="AM" selected>AM</option>
-		<option value="PM">PM</option>
-	</select>
-	<br />
-	<label for="finishHour">Finish</label>
-	<select id="finishHour" name="finishHour"></select>
-	<select id="finishMinute" name="finishMinute"></select>
-	<select id="finishAMPM" name="finishAMPM">
-		<option value="AM" selected>AM</option>
-		<option value="PM">PM</option>
-	</select>
-	<br />
-	<label for="dateMonth">Date</label>
-	<select id="dateMonth" name="dateMonth"></select>
-	<select id="dateDay" name="dateDay"></select>
-	<select id="dateYear" name="dateYear"></select>
-	<br />
-	<label for="location">Location</label>
-	<input type="text" id="location" name="location" placeholder="Location (optional)" />
-	<br />
-	<label for="description">Description</label>
-	<br />
-	<textarea id="description" name="description" placeholder="Description (optional)" ></textarea>
-	<br />
-	<input type="button" id="download-button" value="Download Event .ics File" />
+<body class="ui padded container">
+	<div id="mainContainer" class="ui container">
+		<a href="#title">Set Title</a>
+		<br />
+		<a href="#startAndFinishTimes">Set Start and Finish Times</a>
+		<br />
+		<a href="#date">Set Date</a>
+		<br />
+		<a href="#location">Set Location</a>
+		<br />
+		<a href="#description">Set Description</a>
+		<br />
+		<input type="button" id="download-button" value="Download Event .ics File" />
+	</div>
+
+	<div id="titleContainer" class="ui form segment" style="display: none;">
+		<div class="field">
+			<label for="title">Title</label>
+			<input type="text" id="title" name="title" placeholder="Title (optional)" />
+		</div>
+		<div class="fluid ui buttons">
+			<button class="ui button" onclick="cancelEdit()">Cancel</button>
+			<button class="ui positive button" onclick="saveEdit()">Save</button>
+		</div>
+	</div>
+	<div id="startAndFinishTimesContainer" class="ui form segment" style="display: none;">
+		<div class="field">
+			<label for="startHour">Start</label>
+			<div class="fields">
+				<div class="field">
+					<select id="startHour" name="startHour"></select>
+				</div>
+				<div class="field">
+					<select id="startMinute" name="startMinute"></select>
+				</div>
+				<div class="field">
+					<select id="startAMPM" name="startAMPM">
+						<option value="AM" selected>AM</option>
+						<option value="PM">PM</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="field">
+			<label for="finishHour">Finish</label>
+			<div class="fields">
+				<div class="field">
+					<select id="finishHour" name="finishHour"></select>
+				</div>
+				<div class="field">
+					<select id="finishMinute" name="finishMinute"></select>
+				</div>
+				<div class="field">
+					<select id="finishAMPM" name="finishAMPM">
+						<option value="AM" selected>AM</option>
+						<option value="PM">PM</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="fluid ui buttons">
+			<button class="ui button" onclick="cancelEdit()">Cancel</button>
+			<button class="ui positive button" onclick="saveEdit()">Save</button>
+		</div>
+	</div>
+	<div id="dateContainer" class="ui form segment" style="display: none;">
+		<div class="field">
+			<label for="dateMonth">Date</label>
+			<div class="fields">
+				<div class="field">
+					<select id="dateMonth" name="dateMonth"></select>
+				</div>
+				<div class="field">
+					<select id="dateDay" name="dateDay"></select>
+				</div>
+				<div class="field">
+					<select id="dateYear" name="dateYear"></select>
+				</div>
+			</div>
+		</div>
+		<div class="fluid ui buttons">
+			<button class="ui button" onclick="cancelEdit()">Cancel</button>
+			<button class="ui positive button" onclick="saveEdit()">Save</button>
+		</div>
+	</div>
+	<div id="locationContainer" class="ui form segment" style="display: none;">
+		<div class="field">
+			<label for="location">Location</label>
+			<input type="text" id="location" name="location" placeholder="Location (optional)" />
+		</div>
+		<div class="fluid ui buttons">
+			<button class="ui button" onclick="cancelEdit()">Cancel</button>
+			<button class="ui positive button" onclick="saveEdit()">Save</button>
+		</div>
+	</div>
+	<div id="descriptionContainer" class="ui form segment" style="display: none;">
+		<div class="field">
+			<label for="description">Description</label>
+			<textarea id="description" name="description" placeholder="Description (optional)" ></textarea>
+		</div>
+		<div class="fluid ui buttons">
+			<button class="ui button" onclick="cancelEdit()">Cancel</button>
+			<button class="ui positive button" onclick="saveEdit()">Save</button>
+		</div>
+	</div>
 </body>
 </html>
