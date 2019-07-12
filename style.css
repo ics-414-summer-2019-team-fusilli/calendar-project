@@ -1,9 +1,13 @@
-body {
+#menuContainer {
   margin: auto;
+  margin-top: 160px;
   padding: 10px;
   text-align:center;
   font-size:150%;
-}
+  width: 55%;
+  border: 3px solid dodgerblue;
+  line-height:160%;
+ }
 
 #download-button {
   background-color: dodgerblue;
@@ -17,4 +21,8 @@ body {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+}
+
+#header {
+  font-size:200%;
 }
