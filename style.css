@@ -1,28 +1,13 @@
-#menuContainer {
-  margin: auto;
-  margin-top: 160px;
-  padding: 10px;
-  text-align:center;
-  font-size:150%;
-  width: 55%;
-  border: 3px solid dodgerblue;
-  line-height:160%;
- }
-
-#download-button {
-  background-color: dodgerblue;
-  border: none;
-  width: 280px;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
+body {
+  margin-top: 10px !important;
+  width: 100% !important;
 }
 
-#header {
-  font-size:200%;
+#mainContainer {
+  max-width: 500px !important;
+  margin: 0 auto !important;
+}
+
+#download-button {
+  margin-top: 15px !important;
 }
