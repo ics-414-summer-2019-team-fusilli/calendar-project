@@ -228,6 +228,20 @@ function fixLongitude() {
     document.getElementById("longitude").value = parseFloat(document.getElementById("longitude").value).toFixed(6);
 }
 
+function validateRecur() {
+  var recurrence = document.getElementsByName("recur");
+  var recurrenceOption = 0;
+
+  for(var i = 0; i < recurrence.length; i++)
+  {
+    if(recurrence[i].checked)
+      recurrenceOption = i;
+  }
+
+  return recurrenceOption;
+
+}
+
 window.onload = function() {
 	// generate options for select inputs
 	generateHourOptions("startHour");
@@ -260,6 +274,7 @@ window.onload = function() {
 		var dateDay = parseInt(userInputs["dateDay"], 10);
 		// need year in YYYY integer, have YYYY string
 		var dateYear = parseInt(userInputs["dateYear"], 10);
+		var recurrence = userInputs["recurrence"];
 		// set to current time
 		var dtstamp = new Date();
 		// set to user input
@@ -419,6 +434,31 @@ window.onhashchange = function() {
 					</div>
 				</div>
 			</div>
+          <div class="field">
+            <label >Recurrence?</label>
+            <div class="ui radio checkbox">
+              <input type="radio" name="recur" value="1" checked="checked" onclick="return validateRecur();">
+              <label>Once</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui radio checkbox">
+              <input type="radio" name="recur" value="2" onclick="return validateRecur();">
+              <label>Weekly</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui radio checkbox">
+              <input type="radio" name="recur" value="3" onclick="return validateRecur();">
+              <label>Monthly</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui radio checkbox">
+              <input type="radio" name="recur" value="4" onclick="return validateRecur();">
+              <label>Yearly</label>
+            </div>
+          </div>
 			<div class="fluid ui buttons">
 				<button class="ui button" onclick="cancelEdit()">Cancel</button>
 				<button class="ui positive button" onclick="saveEdit()">Save</button>
