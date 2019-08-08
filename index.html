@@ -19,6 +19,9 @@ var userInputs = {
 	dateMonth: "",
 	dateDay: "",
 	dateYear: "",
+  untilYear: "",
+  untilMonth: "",
+  untilDay: "",
 	location: "",
   latitude: "",
   longitude: "",
@@ -242,6 +245,42 @@ function validateRecur() {
 
 }
 
+function validateFrequency() {
+  if(document.getElementById("until").value != "") {
+
+    var startHour = (userInputs["startHour"] == "12" ? 0 : parseInt(userInputs["startHour"], 10)) + (userInputs["startAMPM"] == "PM" ? 12 : 0);
+    var finishHour = (userInputs["finishHour"] == "12" ? 0 : parseInt(userInputs["finishHour"], 10)) + (userInputs["finishAMPM"] == "PM" ? 12 : 0);
+    // need month in 0-59 integer, have 00-59 string
+    var startMinute = parseInt(userInputs["startMinute"], 10);
+    var finishMinute = parseInt(userInputs["finishMinute"], 10);
+    // need month in 0-11 integer, have 0-11 string
+    var dateMonth = parseInt(userInputs["dateMonth"], 10);
+    // need day in 1-31 integer, have 1-31 string
+    var dateDay = parseInt(userInputs["dateDay"], 10);
+    // need year in YYYY integer, have YYYY string
+    var dateYear = parseInt(userInputs["dateYear"], 10);
+    var untilMonth = parseInt(userInputs["untilMonth"], 10);
+    // need day in 1-31 integer, have 1-31 string
+    var untilDay = parseInt(userInputs["untilDay"], 10);
+    // need year in YYYY integer, have YYYY string
+    var untilYear = parseInt(userInputs["untilYear"], 10);
+    // set to current time
+    var dtstart = new Date(dateYear, dateMonth, dateDay, startHour, startMinute, 0, 0);
+    var until = new Date(untilYear, untilMonth, untilDay, finishHour, finishMinute, 0, 0);
+
+    if(dtstart > until) {
+      alert("Error: Expiration date is earlier than the first event date");
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+  else {
+    return false;
+  }
+}
+
 window.onload = function() {
 	// generate options for select inputs
 	generateHourOptions("startHour");
@@ -251,12 +290,18 @@ window.onload = function() {
 	generateMonthOptions("dateMonth");
 	generateDayOptions("dateDay");
 	generateYearOptions("dateYear");
+  generateMonthOptions("untilMonth");
+  generateDayOptions("untilDay");
+  generateYearOptions("untilYear");
 	// get the current time
 	var currentTime = new Date();
 	// set the default date to today
 	userInputs["dateMonth"] = currentTime.getMonth();
 	userInputs["dateDay"] = currentTime.getDate();
 	userInputs["dateYear"] = currentTime.getFullYear();
+  userInputs["untilMonth"] = currentTime.getMonth();
+  userInputs["untilDay"] = currentTime.getDate();
+  userInputs["untilYear"] = currentTime.getFullYear();
 	// set default input field values
 	setInputFieldValues();
 
@@ -270,16 +315,22 @@ window.onload = function() {
 		var finishMinute = parseInt(userInputs["finishMinute"], 10);
 		// need month in 0-11 integer, have 0-11 string
 		var dateMonth = parseInt(userInputs["dateMonth"], 10);
-		// need day in 1-31 integer, have 1-31 string
-		var dateDay = parseInt(userInputs["dateDay"], 10);
-		// need year in YYYY integer, have YYYY string
-		var dateYear = parseInt(userInputs["dateYear"], 10);
+    // need day in 1-31 integer, have 1-31 string
+    var dateDay = parseInt(userInputs["dateDay"], 10);
+    // need year in YYYY integer, have YYYY string
+    var dateYear = parseInt(userInputs["dateYear"], 10);
+    var untilMonth = parseInt(userInputs["untilMonth"], 10);
+    // need day in 1-31 integer, have 1-31 string
+    var untilDay = parseInt(userInputs["untilDay"], 10);
+    // need year in YYYY integer, have YYYY string
+    var untilYear = parseInt(userInputs["untilYear"], 10);
 		var recurrence = userInputs["recurrence"];
 		// set to current time
 		var dtstamp = new Date();
 		// set to user input
 		var dtstart = new Date(dateYear, dateMonth, dateDay, startHour, startMinute, 0, 0);
 		var dtend = new Date(dateYear, dateMonth, dateDay, finishHour, finishMinute, 0, 0);
+    var until = new Date(untilYear, untilMonth, untilDay, finishHour, finishMinute, 0, 0);
     var fLatitude =  (parseFloat(userInputs["latitude"])).toFixed(6);
     var fLongitude = (parseFloat(userInputs["longitude"])).toFixed(6);
 		var filename = "event.ics";
@@ -292,9 +343,28 @@ window.onload = function() {
 		text += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // required
 		text += "DTSTART:" + formatTimestamp(dtstart) + "\r\n"; // required if METHOD not specified
 		text += "DTEND:" + formatTimestamp(dtend) + "\r\n"; // optional
+
+    //Recurring
+    if (validateRecur() != 0) {
+      let freqRule = "";
+      switch (validateRecur()) {
+        case 1:
+          freqRule = "DAILY";
+          break;
+        case 2:
+          freqRule = "WEEKLY;";
+          break;
+        case 3:
+          freqRule = "MONTHLY;";
+          break;
+        case 4:
+          freqRule = "YEARLY;";
+          break;
+      }
+      text += "RRULE:FREQ=" + freqRule + "UNTIL=" + formatTimestamp(until) + "Z\r\n";
+    }
+
     text += "GEO:" + fLatitude + ";" + fLongitude + "\r\n";
-
-
 		// only include summary if title isn't empty
 		if (userInputs["title"].length > 0) {
 			text += "SUMMARY:" + userInputs["title"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
@@ -437,10 +507,16 @@ window.onhashchange = function() {
           <div class="field">
             <label >Recurrence?</label>
             <div class="ui radio checkbox">
-              <input type="radio" name="recur" value="1" checked="checked" onclick="return validateRecur();">
+              <input type="radio" name="recur" value="0" checked="checked" onclick="return validateRecur();">
               <label>Once</label>
             </div>
           </div>
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="1" onclick="return validateRecur();">
+          <label>DAILY</label>
+        </div>
+      </div>
           <div class="field">
             <div class="ui radio checkbox">
               <input type="radio" name="recur" value="2" onclick="return validateRecur();">
@@ -459,6 +535,20 @@ window.onhashchange = function() {
               <label>Yearly</label>
             </div>
           </div>
+      <div class="field">
+        <label>Repeat Until</label>
+        <div class="fields">
+          <div class="field">
+            <select id="untilMonth" name="dateMonth"></select>
+          </div>
+          <div class="field">
+            <select id="untilDay" name="dateDay"></select>
+          </div>
+          <div class="field">
+            <select id="untilYear" name="dateYear"></select>
+          </div>
+        </div>
+      </div>
 			<div class="fluid ui buttons">
 				<button class="ui button" onclick="cancelEdit()">Cancel</button>
 				<button class="ui positive button" onclick="saveEdit()">Save</button>
