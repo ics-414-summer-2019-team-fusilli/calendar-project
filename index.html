@@ -20,6 +20,8 @@ var userInputs = {
 	dateDay: "",
 	dateYear: "",
 	location: "",
+  latitude: "",
+  longitude: "",
 	description: ""
 };
 // array of month names
@@ -44,7 +46,8 @@ var containerNames = [
 	"startAndFinishTimes",
 	"date",
 	"location",
-	"description"
+	"geo",
+  "description"
 ];
 
 // source: https://stackoverflow.com/questions/45831191/generate-and-download-file-from-js/45831280#45831280
@@ -169,6 +172,35 @@ function generateYearOptions(elementId) {
 		selectElement.appendChild(optionElement);
 	}
 }
+// function to add latitude options to a select input
+function generateLatitudeOptions(elementId) {
+  // get the select element to add options to
+  var selectElement = document.getElementById(elementId);
+
+  // create options for YYYY, YYYY + 1, ... YYYY + 9
+  for (var i = -90; i <= 90; i++) {
+    // create new option element
+    var optionElement = document.createElement('option');
+    optionElement.value = i;
+    optionElement.innerHTML = i;
+    // append new option element to the select element
+    selectElement.appendChild(optionElement);
+  }
+}
+function generateLongitudeOptions(elementId) {
+  // get the select element to add options to
+  var selectElement = document.getElementById(elementId);
+
+  // create options for YYYY, YYYY + 1, ... YYYY + 9
+  for (var i = -180; i <= 180; i++) {
+    // create new option element
+    var optionElement = document.createElement('option');
+    optionElement.value = i;
+    optionElement.innerHTML = i;
+    // append new option element to the select element
+    selectElement.appendChild(optionElement);
+  }
+}
 // function to hide all containers
 function hideAllContainers() {
 	// loop through containerNames
@@ -213,6 +245,8 @@ window.onload = function() {
 	generateMonthOptions("dateMonth");
 	generateDayOptions("dateDay");
 	generateYearOptions("dateYear");
+	generateLatitudeOptions("latitude");
+	generateLongitudeOptions("longitude");
 	// get the current time
 	var currentTime = new Date();
 	// set the default date to today
@@ -237,6 +271,10 @@ window.onload = function() {
 		// need year in YYYY integer, have YYYY string
 		var dateYear = parseInt(userInputs["dateYear"], 10);
 
+		var fLatitude =  parseFloat(userInputs["latitude"]);
+
+		var fLongitude = parseFloat(userInputs["longitude"]);
+
 		// set to current time
 		var dtstamp = new Date();
 		// set to user input
@@ -254,6 +292,9 @@ window.onload = function() {
 		text += "DTSTART:" + formatTimestamp(dtstart) + "\r\n"; // required if METHOD not specified
 		text += "DTEND:" + formatTimestamp(dtend) + "\r\n"; // optional
 
+    text += "GEO:" + fLatitude + ";" + fLongitude + "\r\n";
+
+
 		// only include summary if title isn't empty
 		if (userInputs["title"].length > 0) {
 			text += "SUMMARY:" + userInputs["title"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
@@ -262,6 +303,8 @@ window.onload = function() {
 		if (userInputs["location"].length > 0) {
 			text += "LOCATION:" + userInputs["location"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
 		}
+
+
 		// only include description if description isn't empty
 		if (userInputs["description"].length > 0) {
 			text += "DESCRIPTION:" + userInputs["description"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
@@ -320,6 +363,8 @@ window.onhashchange = function() {
 			<br />
 			<a href="#location">Set Location</a>
 			<br />
+      <a href="#geo">Set Graphical Location</a>
+      <br />
 			<a href="#description">Set Description</a>
 			<br />
 			<button class="fluid ui blue huge button" id="download-button">Download Event .ics File</button>
@@ -404,6 +449,20 @@ window.onhashchange = function() {
 				<button class="ui positive button" onclick="saveEdit()">Save</button>
 			</div>
 		</div>
+    <div id="geoContainer" class="ui form segment" style="display: none;">
+      <div class="field">
+        <label for="latitude">Latitude</label>
+            <select id="latitude" name="latitude"></select>
+      </div>
+      <div class="field">
+        <label for="longitude">Longitude</label>
+          <select id="longitude" name="longitude"></select>
+      </div>
+      <div class="fluid ui buttons">
+        <button class="ui button" onclick="cancelEdit()">Cancel</button>
+        <button class="ui positive button" onclick="saveEdit()">Save</button>
+      </div>
+    </div>
 		<div id="descriptionContainer" class="ui form segment" style="display: none;">
 			<div class="field">
 				<label for="description">Description</label>
