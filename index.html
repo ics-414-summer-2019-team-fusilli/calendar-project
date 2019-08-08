@@ -172,35 +172,7 @@ function generateYearOptions(elementId) {
 		selectElement.appendChild(optionElement);
 	}
 }
-// function to add latitude options to a select input
-function generateLatitudeOptions(elementId) {
-  // get the select element to add options to
-  var selectElement = document.getElementById(elementId);
 
-  // create options for YYYY, YYYY + 1, ... YYYY + 9
-  for (var i = -90; i <= 90; i++) {
-    // create new option element
-    var optionElement = document.createElement('option');
-    optionElement.value = i;
-    optionElement.innerHTML = i;
-    // append new option element to the select element
-    selectElement.appendChild(optionElement);
-  }
-}
-function generateLongitudeOptions(elementId) {
-  // get the select element to add options to
-  var selectElement = document.getElementById(elementId);
-
-  // create options for YYYY, YYYY + 1, ... YYYY + 9
-  for (var i = -180; i <= 180; i++) {
-    // create new option element
-    var optionElement = document.createElement('option');
-    optionElement.value = i;
-    optionElement.innerHTML = i;
-    // append new option element to the select element
-    selectElement.appendChild(optionElement);
-  }
-}
 // function to hide all containers
 function hideAllContainers() {
 	// loop through containerNames
@@ -228,12 +200,33 @@ function cancelEdit() {
 function saveEdit() {
 	// loop through userInputs
 	Object.keys(userInputs).forEach(function(key) {
-		// set the value stored in the userInputs object to the corresponding input field value
 		userInputs[key] = document.getElementById(key).value;
+	  // set the value stored in the userInputs object to the corresponding input field value
+    userInputs[key] = document.getElementById(key).value;
 	});
 
 	// go back to main container
 	window.history.go(-1);
+}
+
+function fixLatitude() {
+    if (document.getElementById("latitude").value > 90) {
+      document.getElementById("latitude").value = 90;
+    }
+    else if (document.getElementById("latitude").value < -90) {
+      document.getElementById("latitude").value = -90;
+    }
+    document.getElementById("latitude").value = parseFloat(document.getElementById("latitude").value).toFixed(6);
+}
+
+function fixLongitude() {
+    if(document.getElementById("longitude").value > 180) {
+      document.getElementById("longitude").value = 180;
+    }
+    else if(document.getElementById("longitude").value < -180) {
+      document.getElementById("longitude").value = -180;
+    }
+    document.getElementById("longitude").value = parseFloat(document.getElementById("longitude").value).toFixed(6);
 }
 
 window.onload = function() {
@@ -245,8 +238,6 @@ window.onload = function() {
 	generateMonthOptions("dateMonth");
 	generateDayOptions("dateDay");
 	generateYearOptions("dateYear");
-	generateLatitudeOptions("latitude");
-	generateLongitudeOptions("longitude");
 	// get the current time
 	var currentTime = new Date();
 	// set the default date to today
@@ -270,17 +261,13 @@ window.onload = function() {
 		var dateDay = parseInt(userInputs["dateDay"], 10);
 		// need year in YYYY integer, have YYYY string
 		var dateYear = parseInt(userInputs["dateYear"], 10);
-
-		var fLatitude =  parseFloat(userInputs["latitude"]);
-
-		var fLongitude = parseFloat(userInputs["longitude"]);
-
 		// set to current time
 		var dtstamp = new Date();
 		// set to user input
 		var dtstart = new Date(dateYear, dateMonth, dateDay, startHour, startMinute, 0, 0);
 		var dtend = new Date(dateYear, dateMonth, dateDay, finishHour, finishMinute, 0, 0);
-
+    var fLatitude =  (parseFloat(userInputs["latitude"])).toFixed(6);
+    var fLongitude = (parseFloat(userInputs["longitude"])).toFixed(6);
 		var filename = "event.ics";
 		var text = "";
 		text += "BEGIN:VCALENDAR\r\n";
@@ -291,7 +278,6 @@ window.onload = function() {
 		text += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // required
 		text += "DTSTART:" + formatTimestamp(dtstart) + "\r\n"; // required if METHOD not specified
 		text += "DTEND:" + formatTimestamp(dtend) + "\r\n"; // optional
-
     text += "GEO:" + fLatitude + ";" + fLongitude + "\r\n";
 
 
@@ -303,7 +289,6 @@ window.onload = function() {
 		if (userInputs["location"].length > 0) {
 			text += "LOCATION:" + userInputs["location"] + "\r\n"; // optional; to do: ensure line length meets RFC requirement
 		}
-
 
 		// only include description if description isn't empty
 		if (userInputs["description"].length > 0) {
@@ -325,7 +310,8 @@ window.onload = function() {
 
 		if (dtstart > dtend) {
 			alert("Error: Start time after finish time");
-		} else {
+		}
+    else {
 			download(filename, text);
 		}
 	}, false);
@@ -452,11 +438,11 @@ window.onhashchange = function() {
     <div id="geoContainer" class="ui form segment" style="display: none;">
       <div class="field">
         <label for="latitude">Latitude</label>
-            <select id="latitude" name="latitude"></select>
+        <input type="number" id="latitude" max = "90" min="-90" value="0" step="0.000001" onfocusout="fixLatitude()">
       </div>
       <div class="field">
         <label for="longitude">Longitude</label>
-          <select id="longitude" name="longitude"></select>
+          <input type="number" id="longitude" max = "180" min="-180" value="0" step="0.000001" onfocusout="fixLongitude()">
       </div>
       <div class="fluid ui buttons">
         <button class="ui button" onclick="cancelEdit()">Cancel</button>
