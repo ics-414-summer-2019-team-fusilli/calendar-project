@@ -200,7 +200,6 @@ function cancelEdit() {
 function saveEdit() {
 	// loop through userInputs
 	Object.keys(userInputs).forEach(function(key) {
-		userInputs[key] = document.getElementById(key).value;
 	  // set the value stored in the userInputs object to the corresponding input field value
     userInputs[key] = document.getElementById(key).value;
 	});
