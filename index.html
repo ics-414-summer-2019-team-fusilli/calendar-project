@@ -242,43 +242,6 @@ function validateRecur() {
   }
 
   return recurrenceOption;
-
-}
-
-function validateFrequency() {
-  if(document.getElementById("until").value != "") {
-
-    var startHour = (userInputs["startHour"] == "12" ? 0 : parseInt(userInputs["startHour"], 10)) + (userInputs["startAMPM"] == "PM" ? 12 : 0);
-    var finishHour = (userInputs["finishHour"] == "12" ? 0 : parseInt(userInputs["finishHour"], 10)) + (userInputs["finishAMPM"] == "PM" ? 12 : 0);
-    // need month in 0-59 integer, have 00-59 string
-    var startMinute = parseInt(userInputs["startMinute"], 10);
-    var finishMinute = parseInt(userInputs["finishMinute"], 10);
-    // need month in 0-11 integer, have 0-11 string
-    var dateMonth = parseInt(userInputs["dateMonth"], 10);
-    // need day in 1-31 integer, have 1-31 string
-    var dateDay = parseInt(userInputs["dateDay"], 10);
-    // need year in YYYY integer, have YYYY string
-    var dateYear = parseInt(userInputs["dateYear"], 10);
-    var untilMonth = parseInt(userInputs["untilMonth"], 10);
-    // need day in 1-31 integer, have 1-31 string
-    var untilDay = parseInt(userInputs["untilDay"], 10);
-    // need year in YYYY integer, have YYYY string
-    var untilYear = parseInt(userInputs["untilYear"], 10);
-    // set to current time
-    var dtstart = new Date(dateYear, dateMonth, dateDay, startHour, startMinute, 0, 0);
-    var until = new Date(untilYear, untilMonth, untilDay, finishHour, finishMinute, 0, 0);
-
-    if(dtstart > until) {
-      alert("Error: Expiration date is earlier than the first event date");
-      return false;
-    }
-    else {
-      return true;
-    }
-  }
-  else {
-    return false;
-  }
 }
 
 window.onload = function() {
@@ -324,7 +287,6 @@ window.onload = function() {
     var untilDay = parseInt(userInputs["untilDay"], 10);
     // need year in YYYY integer, have YYYY string
     var untilYear = parseInt(userInputs["untilYear"], 10);
-		var recurrence = userInputs["recurrence"];
 		// set to current time
 		var dtstamp = new Date();
 		// set to user input
@@ -346,7 +308,7 @@ window.onload = function() {
 
     //Recurring
     if (validateRecur() != 0) {
-      let freqRule = "";
+      var freqRule = "";
       switch (validateRecur()) {
         case 1:
           freqRule = "DAILY;";
@@ -395,6 +357,11 @@ window.onload = function() {
 		if (dtstart > dtend) {
 			alert("Error: Start time after finish time");
 		}
+
+		else if (dtstart > until) {
+      alert("Error: Start date after expiration date");
+    }
+
     else {
 			download(filename, text);
 		}
