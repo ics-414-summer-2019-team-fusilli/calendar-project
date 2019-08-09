@@ -213,20 +213,24 @@ function saveEdit() {
 
 function fixLatitude() {
     if (document.getElementById("latitude").value > 90) {
-      document.getElementById("latitude").value = 90;
+      document.getElementById("latitude").value = NaN;
+      alert("Latitude is range from -90 to 90");
     }
     else if (document.getElementById("latitude").value < -90) {
-      document.getElementById("latitude").value = -90;
+      document.getElementById("latitude").value = NaN;
+      alert("Latitude is range from -90 to 90");
     }
     document.getElementById("latitude").value = parseFloat(document.getElementById("latitude").value).toFixed(6);
 }
 
 function fixLongitude() {
     if(document.getElementById("longitude").value > 180) {
-      document.getElementById("longitude").value = 180;
+      document.getElementById("longitude").value = NaN;
+      alert("Longitude is range from -180 to 180");
     }
     else if(document.getElementById("longitude").value < -180) {
-      document.getElementById("longitude").value = -180;
+      document.getElementById("longitude").value = NaN;
+      alert("Longitude is range from -180 to 180");
     }
     document.getElementById("longitude").value = parseFloat(document.getElementById("longitude").value).toFixed(6);
 }
