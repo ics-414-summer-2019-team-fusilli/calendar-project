@@ -349,7 +349,7 @@ window.onload = function() {
       let freqRule = "";
       switch (validateRecur()) {
         case 1:
-          freqRule = "DAILY";
+          freqRule = "DAILY;";
           break;
         case 2:
           freqRule = "WEEKLY;";
@@ -361,7 +361,7 @@ window.onload = function() {
           freqRule = "YEARLY;";
           break;
       }
-      text += "RRULE:FREQ=" + freqRule + "UNTIL=" + formatTimestamp(until) + "Z\r\n";
+      text += "RRULE:FREQ=" + freqRule + "UNTIL=" + formatTimestamp(until) + "\r\n";
     }
 
     text += "GEO:" + fLatitude + ";" + fLongitude + "\r\n";
@@ -504,37 +504,42 @@ window.onhashchange = function() {
 					</div>
 				</div>
 			</div>
-          <div class="field">
-            <label >Recurrence?</label>
-            <div class="ui radio checkbox">
-              <input type="radio" name="recur" value="0" checked="checked" onclick="return validateRecur();">
-              <label>Once</label>
-            </div>
-          </div>
+
+      <div class="field">
+        <label >Recurrence?</label>
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="0" checked="checked" onclick="return validateRecur();">
+          <label>Once</label>
+        </div>
+      </div>
+
       <div class="field">
         <div class="ui radio checkbox">
           <input type="radio" name="recur" value="1" onclick="return validateRecur();">
           <label>DAILY</label>
         </div>
       </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="recur" value="2" onclick="return validateRecur();">
-              <label>Weekly</label>
-            </div>
-          </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="recur" value="3" onclick="return validateRecur();">
-              <label>Monthly</label>
-            </div>
-          </div>
-          <div class="field">
-            <div class="ui radio checkbox">
-              <input type="radio" name="recur" value="4" onclick="return validateRecur();">
-              <label>Yearly</label>
-            </div>
-          </div>
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="2" onclick="return validateRecur();">
+          <label>Weekly</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="3" onclick="return validateRecur();">
+          <label>Monthly</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="4" onclick="return validateRecur();">
+          <label>Yearly</label>
+        </div>
+      </div>
+
       <div class="field">
         <label>Repeat Until</label>
         <div class="fields">
