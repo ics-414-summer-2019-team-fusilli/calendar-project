@@ -281,9 +281,13 @@ window.onload = function() {
 		text += "END:VEVENT\r\n";
 		text += "END:VCALENDAR\r\n";
 
-		if ((userInputs["startDateTime"] > userInputs["finishDateTime"])|| ((userInputs["untilDateTime"] < userInputs["finishDateTime"]))) {
+		if (userInputs["startDateTime"] > userInputs["finishDateTime"]) {
 			alert("Error: Try setting up date and time again");
-		} else {
+		}
+		else if((userInputs["untilDateTime"] < userInputs["finishDateTime"]) && (validateRecur() != 0)) {
+      alert("Error: Try setting up Repeat Until again");
+    }
+    else {
 			download(filename, text);
 		}
 	}, false);
