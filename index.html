@@ -281,8 +281,8 @@ window.onload = function() {
 		text += "END:VEVENT\r\n";
 		text += "END:VCALENDAR\r\n";
 
-		if (userInputs["startDateTime"] > userInputs["finishDateTime"]) {
-			alert("Error: Start time after finish time");
+		if ((userInputs["startDateTime"] > userInputs["finishDateTime"])|| ((userInputs["untilDateTime"] < userInputs["finishDateTime"]))) {
+			alert("Error: Try setting up date and time again");
 		} else {
 			download(filename, text);
 		}
