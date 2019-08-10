@@ -6,8 +6,21 @@ body {
 #mainContainer {
   max-width: 500px !important;
   margin: 0 auto !important;
+  font-size: 17px;
 }
 
 #download-button {
   margin-top: 15px !important;
+}
+
+#icon {
+  width: 280px;
+  height: 150px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#header1 {
+  font-size: 20px;
 }
