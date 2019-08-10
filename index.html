@@ -14,7 +14,10 @@ var userInputs = {
 	title: "", // string; optional
 	startDateTime: new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 8, 0, 0), // today at 8:00 AM
 	finishDateTime: new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 12, 0, 0), // today at 12:00 PM
+  untilDateTime: currentTime, // // get the current time for default values
 	location: "", // string; optional
+  latitude: "",
+  longitude: "",
 	description: "", // string; optional
 	classification: "PUBLIC", // string; optional; allowed values: PUBLIC, PRIVATE and CONFIDENTIAL
 	priority: 0, // integer; optional; allowed values: 0-9; 0 undefined, 1 highest, 5 medium, 9 lowest
@@ -26,7 +29,8 @@ var containerNames = [
 	"title",
 	"startAndFinish",
 	"location",
-	"description", 
+  "geo",
+	"description",
 	"classification",
 	"priority"
 ];
@@ -93,7 +97,7 @@ function setInputFieldValues() {
 	// loop through userInputs
 	Object.keys(userInputs).forEach(function(key) {
 		// special case for startDateTime and finishDateTime
-		if (key == "startDateTime" || key == "finishDateTime") {
+		if (key == "startDateTime" || key == "finishDateTime" || key == "untilDateTime") {
 			// set calendar element to the value stored in the userInputs object
 			$("#" + key).calendar("set date", userInputs[key]);
 		// special case for classification and priority
@@ -139,6 +143,39 @@ function saveEdit() {
 	window.history.go(-1);
 }
 
+function fixLatitude() {
+  if (document.getElementById("latitude").value > 90) {
+    document.getElementById("latitude").value = NaN;
+    alert("Latitude is range from -90 to 90");
+  }
+  else if (document.getElementById("latitude").value < -90) {
+    document.getElementById("latitude").value = NaN;
+    alert("Latitude is range from -90 to 90");
+  }
+  document.getElementById("latitude").value = parseFloat(document.getElementById("latitude").value).toFixed(6);
+}
+function fixLongitude() {
+  if(document.getElementById("longitude").value > 180) {
+    document.getElementById("longitude").value = NaN;
+    alert("Longitude is range from -180 to 180");
+  }
+  else if(document.getElementById("longitude").value < -180) {
+    document.getElementById("longitude").value = NaN;
+    alert("Longitude is range from -180 to 180");
+  }
+  document.getElementById("longitude").value = parseFloat(document.getElementById("longitude").value).toFixed(6);
+}
+function validateRecur() {
+  var recurrence = document.getElementsByName("recur");
+  var recurrenceOption = 0;
+  for(var i = 0; i < recurrence.length; i++)
+  {
+    if(recurrence[i].checked)
+      recurrenceOption = i;
+  }
+  return recurrenceOption;
+}
+
 window.onload = function() {
 	// always to go info on page load
 	location.hash = "#info";
@@ -149,6 +186,14 @@ window.onload = function() {
 	$('#finishDateTime').calendar({
 		startCalendar: $('#startDateTime')
 	});
+
+  $('#untilDateTime').calendar({
+    endCalendar: $('#untilDateTime')
+  });
+  $('#untilDateTime').calendar({
+    startCalendar: $('#untilDateTime')
+  });
+
 	// set default input field values
 	setInputFieldValues();
 
@@ -158,6 +203,8 @@ window.onload = function() {
 		var dtstamp = new Date();
 		// generate output file
 		var filename = "event.ics";
+    var fLatitude =  (parseFloat(userInputs["latitude"])).toFixed(6);
+    var fLongitude = (parseFloat(userInputs["longitude"])).toFixed(6);
 		var text = "";
 		text += "BEGIN:VCALENDAR\r\n";
 		text += "VERSION:2.0\r\n";
@@ -179,6 +226,27 @@ window.onload = function() {
 		text += "DTSTAMP:" + formatTimestamp(dtstamp) + "\r\n"; // 3.8.7.1 - required
 		text += "DTSTART:" + formatTimestamp(userInputs["startDateTime"]) + "\r\n"; // 3.8.2.4 - required if METHOD not specified
 		text += "DTEND:" + formatTimestamp(userInputs["finishDateTime"]) + "\r\n"; // 3.8.2.2 - optional
+
+    if (validateRecur() != 0) {
+      var freqRule = "";
+      switch (validateRecur()) {
+        case 1:
+          freqRule = "DAILY;";
+          break;
+        case 2:
+          freqRule = "WEEKLY;";
+          break;
+        case 3:
+          freqRule = "MONTHLY;";
+          break;
+        case 4:
+          freqRule = "YEARLY;";
+          break;
+      }
+      text += "RRULE:FREQ=" + freqRule + "UNTIL=" + formatTimestamp(userInputs["untilDateTime"]) + "\r\n";
+    }
+
+    text += "GEO:" + fLatitude + ";" + fLongitude + "\r\n";
 
 		// only include summary if title isn't empty
 		if (userInputs["title"].length > 0) {
@@ -263,9 +331,13 @@ window.onhashchange = function() {
 			<a href="#startAndFinish">Set Finish Time</a>
 			<br />
 			<b>Location:</b>
-			<span id="locationMenu"></span>
-			<a href="#location">Set Location</a>
-			<br />
+      <span id="locationMenu"></span>
+      <a href="#location">Set Location</a>
+      <br />
+      <b>Geographical Location:</b>
+      <span id="geolocationMenu"></span>
+      <a href="#geo">Set Geographical Location</a>
+      <br />
 			<b>Description:</b>
 			<span id="descriptionMenu"></span>
 			<a href="#description">Set Description</a>
@@ -309,6 +381,50 @@ window.onhashchange = function() {
 					</div>
 				</div>
 			</div>
+      <div class="field">
+        <label >Recurrence?</label>
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="0" checked="checked" onclick="return validateRecur();">
+          <label>Once</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="1" onclick="return validateRecur();">
+          <label>DAILY</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="2" onclick="return validateRecur();">
+          <label>Weekly</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="3" onclick="return validateRecur();">
+          <label>Monthly</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" name="recur" value="4" onclick="return validateRecur();">
+          <label>Yearly</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Repeat Until </label>
+        <div class="ui calendar" id="untilDateTime">
+          <div class="ui input left icon">
+            <i class="calendar icon"></i>
+            <input type="text" placeholder="Until">
+          </div>
+        </div>
+      </div>
 			<div class="fluid ui buttons">
 				<button class="ui huge button" onclick="cancelEdit()">Cancel</button>
 				<button class="ui huge positive button" onclick="saveEdit()">Save</button>
@@ -324,6 +440,20 @@ window.onhashchange = function() {
 				<button class="ui huge positive button" onclick="saveEdit()">Save</button>
 			</div>
 		</div>
+    <div id="geoContainer" class="ui form segment" style="display: none;">
+      <div class="field">
+        <label for="latitude">Latitude</label>
+        <input type="number" id="latitude" max = "90" min="-90" value="0" step="0.000001" onfocusout="fixLatitude()">
+      </div>
+      <div class="field">
+        <label for="longitude">Longitude</label>
+        <input type="number" id="longitude" max = "180" min="-180" value="0" step="0.000001" onfocusout="fixLongitude()">
+      </div>
+      <div class="fluid ui buttons">
+        <button class="ui huge button" onclick="cancelEdit()">Cancel</button>
+        <button class="ui huge positive button" onclick="saveEdit()">Save</button>
+      </div>
+    </div>
 		<div id="descriptionContainer" class="ui form container" style="display: none;">
 			<div class="field">
 				<label for="description">Description</label>
