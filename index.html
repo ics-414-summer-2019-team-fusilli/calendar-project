@@ -14,7 +14,7 @@ var userInputs = {
 	title: "", // string; optional
 	startDateTime: new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 8, 0, 0), // today at 8:00 AM
 	finishDateTime: new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 12, 0, 0), // today at 12:00 PM
-  untilDateTime: currentTime, // // get the current time for default values
+  untilDateTime: null, // default to null, allows for recurrence to be forever
 	location: "", // string; optional
   latitude: "",
   longitude: "",
@@ -29,7 +29,6 @@ var containerNames = [
 	"title",
 	"startAndFinish",
 	"location",
-  "geo",
 	"description",
 	"classification",
 	"priority"
@@ -186,13 +185,10 @@ window.onload = function() {
 	$('#finishDateTime').calendar({
 		startCalendar: $('#startDateTime')
 	});
-
-  $('#untilDateTime').calendar({
-    endCalendar: $('#untilDateTime')
-  });
-  $('#untilDateTime').calendar({
-    startCalendar: $('#untilDateTime')
-  });
+	// initiate repeat until calendar
+	$('#untilDateTime').calendar({
+		type: 'date'
+	});
 
 	// set default input field values
 	setInputFieldValues();
@@ -243,10 +239,18 @@ window.onload = function() {
           freqRule = "YEARLY;";
           break;
       }
-      text += "RRULE:FREQ=" + freqRule + "UNTIL=" + formatTimestamp(userInputs["untilDateTime"]) + "\r\n";
+      text += "RRULE:FREQ=" + freqRule;
+      // allows for forever recurrence
+      if (userInputs["untilDateTime"] != null) {
+        text += "UNTIL=" + formatTimestamp(userInputs["untilDateTime"]);
+      }
+      text += "\r\n";
     }
 
-    text += "GEO:" + fLatitude + ";" + fLongitude + "\r\n";
+		// Only include geo location if it is not empty
+		if (!isNaN(fLatitude) && !isNaN(fLongitude)) {
+			text += "GEO:" + fLatitude + ";" + fLongitude + "\r\n";
+		}
 
 		// only include summary if title isn't empty
 		if (userInputs["title"].length > 0) {
@@ -331,13 +335,9 @@ window.onhashchange = function() {
 			<a href="#startAndFinish">Set Finish Time</a>
 			<br />
 			<b>Location:</b>
-      <span id="locationMenu"></span>
-      <a href="#location">Set Location</a>
-      <br />
-      <b>Geographical Location:</b>
-      <span id="geolocationMenu"></span>
-      <a href="#geo">Set Geographical Location</a>
-      <br />
+			<span id="locationMenu"></span>
+			<a href="#location">Set Location</a>
+			<br />
 			<b>Description:</b>
 			<span id="descriptionMenu"></span>
 			<a href="#description">Set Description</a>
@@ -435,25 +435,19 @@ window.onhashchange = function() {
 				<label for="location">Location</label>
 				<input type="text" id="location" name="location" placeholder="Location (optional)" />
 			</div>
+			<div class="field">
+				<label for="latitude">Latitude</label>
+				<input type="number" id="latitude" max = "90" min="-90" value="0" step="0.000001" onfocusout="fixLatitude()">
+			</div>
+			<div class="field">
+				<label for="longitude">Longitude</label>
+				<input type="number" id="longitude" max = "180" min="-180" value="0" step="0.000001" onfocusout="fixLongitude()">
+			</div>
 			<div class="fluid ui buttons">
 				<button class="ui huge button" onclick="cancelEdit()">Cancel</button>
 				<button class="ui huge positive button" onclick="saveEdit()">Save</button>
 			</div>
 		</div>
-    <div id="geoContainer" class="ui form segment" style="display: none;">
-      <div class="field">
-        <label for="latitude">Latitude</label>
-        <input type="number" id="latitude" max = "90" min="-90" value="0" step="0.000001" onfocusout="fixLatitude()">
-      </div>
-      <div class="field">
-        <label for="longitude">Longitude</label>
-        <input type="number" id="longitude" max = "180" min="-180" value="0" step="0.000001" onfocusout="fixLongitude()">
-      </div>
-      <div class="fluid ui buttons">
-        <button class="ui huge button" onclick="cancelEdit()">Cancel</button>
-        <button class="ui huge positive button" onclick="saveEdit()">Save</button>
-      </div>
-    </div>
 		<div id="descriptionContainer" class="ui form container" style="display: none;">
 			<div class="field">
 				<label for="description">Description</label>
