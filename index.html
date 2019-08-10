@@ -120,8 +120,8 @@ function cancelEdit() {
 function saveEdit() {
 	// loop through userInputs
 	Object.keys(userInputs).forEach(function(key) {
-		// special case for startDateTime and finishDateTime
-		if (key == "startDateTime" || key == "finishDateTime") {
+		// special case for startDateTime, finishDateTime and untilDateTime
+		if (key == "startDateTime" || key == "finishDateTime" || key == "untilDateTime" ) {
 			// set the value stored in the userInputs object to the corresponding calendar element value
 			userInputs[key] = $("#" + key).calendar("get date");
 		// special case for classification
